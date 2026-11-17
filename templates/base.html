@@ -754,6 +754,76 @@
   </div>
   {% block scripts %}{% endblock %}
   <script>
+    document.querySelectorAll('select').forEach(function (select, index) {
+      const options = Array.from(select.options).filter(function (option) {
+        return option.value !== '';
+      });
+      const nameCounts = new Map();
+
+      options.forEach(function (option) {
+        const name = option.textContent.trim().toLocaleLowerCase();
+        nameCounts.set(name, (nameCounts.get(name) || 0) + 1);
+      });
+
+      const labels = new Map();
+      const datalist = document.createElement('datalist');
+      datalist.id = 'search-options-' + index;
+
+      options.forEach(function (option) {
+        const name = option.textContent.trim();
+        const label = nameCounts.get(name.toLocaleLowerCase()) > 1
+          ? name + ' (ID ' + option.value + ')'
+          : name;
+        const suggestion = document.createElement('option');
+        suggestion.value = label;
+        datalist.appendChild(suggestion);
+        labels.set(option.value, label);
+      });
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = select.className;
+      input.setAttribute('list', datalist.id);
+      input.setAttribute('autocomplete', 'off');
+      input.setAttribute('placeholder', 'Type to search...');
+      input.required = select.required;
+
+      if (select.id) {
+        input.id = select.id;
+        select.id += '-select';
+      }
+      if (select.getAttribute('aria-describedby')) {
+        input.setAttribute('aria-describedby', select.getAttribute('aria-describedby'));
+      }
+
+      function syncSelection() {
+        const entered = input.value.trim().toLocaleLowerCase();
+        const match = Array.from(labels.entries()).find(function (entry) {
+          return entry[1].toLocaleLowerCase() === entered;
+        });
+
+        select.value = match ? match[0] : '';
+        input.setCustomValidity(
+          !input.value || match
+            ? ''
+            : 'Choose an existing record from the suggestions.'
+        );
+      }
+
+      const selectedLabel = labels.get(select.value) || '';
+      input.value = selectedLabel;
+      input.defaultValue = selectedLabel;
+      input.addEventListener('input', syncSelection);
+      input.addEventListener('change', syncSelection);
+
+      select.required = false;
+      select.hidden = true;
+      select.tabIndex = -1;
+      select.setAttribute('aria-hidden', 'true');
+      select.parentNode.insertBefore(input, select);
+      select.parentNode.insertBefore(datalist, select.nextSibling);
+    });
+
     document.addEventListener('click', function (event) {
       const openButton = event.target.closest('[data-modal-open]');
       if (openButton) {
