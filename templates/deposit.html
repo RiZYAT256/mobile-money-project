@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+        <h1>DEPOSIT</h1>
+        <div class="container">
+            <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            
+            
+           
+            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="clear" class="btn btn-success">Clear</button>
+
+            </form> 
+            {% if message %}
+                {{message}}
+            {% endif %}
+            
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Agent</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                   {% for deposit in deposits %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ deposit.customer }}</td>
+                            <td>{{ deposit.agent }}</td>
+                            <td>{{ deposit.amount }}</td>
+                            <td>{{ deposit.date }}</td>
+                        <td>
+                            <a class="action-link action-edit" href="{% url 'edit_deposit_page' deposit.id %}">Edit</a> |
+                            <a class="action-link action-delete" href="{% url 'delete_deposit_page' deposit.id %}"
+                            onclick="return confirm('Are you sure you want to cancel this transaction?')">
+                                Delete
+                            </a>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'index_page' %}">Home</a>
+        </div>
+{% endblock content %}

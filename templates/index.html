@@ -1,0 +1,477 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | Mobile Money{% endblock %}
+
+{% block extra_head %}
+<style>
+  .home-hero {
+    position: relative;
+    display: grid;
+    min-height: 300px;
+    grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr);
+    align-items: center;
+    overflow: hidden;
+    padding: clamp(26px, 5vw, 52px);
+    border-radius: 24px;
+    background: linear-gradient(118deg, #075e59 0%, #087f74 58%, #19a58f 100%);
+    color: #fff;
+    box-shadow: 0 22px 50px rgba(7, 94, 89, 0.19);
+  }
+
+  .home-hero::before, .home-hero::after {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    content: "";
+    pointer-events: none;
+  }
+
+  .home-hero::before {
+    top: -155px;
+    right: 4%;
+  }
+
+  .home-hero::after {
+    right: -80px;
+    bottom: -205px;
+    width: 360px;
+    height: 360px;
+  }
+
+  .hero-copy, .hero-art {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 0 17px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 0.14em;
+  }
+
+  .hero-eyebrow .material-symbols-rounded {
+    font-size: 16px;
+  }
+
+  .hero-title {
+    max-width: 580px;
+    margin: 0;
+    color: #fff;
+    font-size: clamp(30px, 4.4vw, 48px);
+    font-weight: 760;
+    letter-spacing: -0.055em;
+    line-height: 1.08;
+  }
+
+  .hero-title span {
+    color: #b7f1df;
+  }
+
+  .hero-description {
+    max-width: 530px;
+    margin: 17px 0 25px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .hero-primary, .hero-secondary {
+    min-height: 46px;
+    padding: 11px 17px;
+    border-radius: 12px;
+  }
+
+  .hero-primary {
+    background: #fff;
+    color: var(--button-hover);
+  }
+
+  .hero-primary:hover {
+    background: #edf9f5;
+    color: var(--button-hover);
+  }
+
+  .hero-secondary {
+    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+
+  .hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+  }
+
+  .hero-art {
+    display: grid;
+    min-height: 210px;
+    place-items: center;
+  }
+
+  .wallet-visual {
+    position: relative;
+    display: grid;
+    width: min(250px, 100%);
+    min-height: 160px;
+    align-content: space-between;
+    padding: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    border-radius: 20px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.09));
+    box-shadow: 0 22px 50px rgba(1, 49, 48, 0.18);
+    transform: rotate(4deg);
+    backdrop-filter: blur(8px);
+  }
+
+  .wallet-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  .wallet-top .material-symbols-rounded {
+    font-size: 22px;
+  }
+
+  .wallet-title {
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .wallet-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 11px;
+  }
+
+  .wallet-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .wallet-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.78);
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 34px 0 15px;
+  }
+
+  .section-heading h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 750;
+  }
+
+  .section-heading p {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+  }
+
+  .action-card {
+    display: flex;
+    min-height: 158px;
+    flex-direction: column;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 17px;
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: 0 5px 18px rgba(20, 66, 67, 0.035);
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  }
+
+  .action-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--outline-border);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+  }
+
+  .action-icon {
+    display: grid;
+    width: 43px;
+    height: 43px;
+    margin-bottom: 16px;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  .action-icon .material-symbols-rounded {
+    font-size: 22px;
+  }
+
+  .action-card h3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 5px;
+    font-size: 14px;
+    font-weight: 750;
+  }
+
+  .action-card h3 .material-symbols-rounded {
+    color: var(--nav-icon-ink);
+    font-size: 19px;
+    transition: transform 160ms ease;
+  }
+
+  .action-card:hover h3 .material-symbols-rounded {
+    transform: translateX(3px);
+    color: var(--brand);
+  }
+
+  .action-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .home-bottom {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .welcome-panel, .activity-panel {
+    min-height: 152px;
+    padding: 21px;
+    border: 1px solid var(--line);
+    border-radius: 17px;
+    background: var(--surface);
+  }
+
+  .welcome-panel {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--note-surface);
+  }
+
+  .welcome-icon {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    place-items: center;
+    border-radius: 16px;
+    background: var(--brand-soft);
+    color: var(--brand-dark);
+  }
+
+  .welcome-panel h3, .activity-panel h3 {
+    margin: 0 0 5px;
+    font-size: 14px;
+    font-weight: 750;
+  }
+
+  .welcome-panel p, .activity-panel p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .activity-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .activity-panel .material-symbols-rounded {
+    color: var(--brand);
+    font-size: 30px;
+  }
+
+  .activity-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 12px;
+    color: var(--brand);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .activity-link:hover {
+    color: var(--brand-dark);
+  }
+
+  @media (max-width: 900px) {
+    .home-hero {
+      grid-template-columns: minmax(0, 1.2fr) minmax(180px, 0.7fr);
+    }
+
+    .action-grid {
+      gap: 10px;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .home-hero {
+      grid-template-columns: 1fr;
+      padding: 28px 24px;
+    }
+
+    .hero-art {
+      display: none;
+    }
+
+    .action-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .action-card {
+      min-height: auto;
+      display: grid;
+      grid-template-columns: 43px 1fr;
+      column-gap: 13px;
+      align-items: center;
+      padding: 14px;
+    }
+
+    .action-icon {
+      grid-row: span 2;
+      margin: 0;
+    }
+
+    .action-card h3 {
+      margin: 0 0 2px;
+    }
+
+    .home-bottom {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="home-hero" aria-labelledby="welcome-title">
+  <div class="hero-copy">
+    <p class="hero-eyebrow">
+      <span class="material-symbols-rounded" aria-hidden="true">waving_hand</span>
+      YOUR MOBILE MONEY SPACE
+    </p>
+    <h1 class="hero-title" id="welcome-title">
+      Great to have you back,<br>
+      <span>Admin.</span>
+    </h1>
+    <p class="hero-description">
+      Keep your everyday transactions organized. Record deposits, withdrawals and transfers,
+      then review your activity whenever you need.
+    </p>
+    <div class="hero-actions">
+      <a href="{% url 'deposit_page' %}" class="btn hero-primary">
+        <span class="material-symbols-rounded" aria-hidden="true">add</span>
+        Make a deposit
+      </a>
+      <a href="{% url 'money_list_page' %}" class="btn hero-secondary">
+        View transactions
+      </a>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="wallet-visual">
+      <div class="wallet-top">
+        <span>MOBILE MONEY</span>
+        <span class="material-symbols-rounded">account_balance_wallet</span>
+      </div>
+      <p class="wallet-title">Your money.<br>Your way.</p>
+      <div class="wallet-bottom">
+        <span>Simple, organized, ready when you are</span>
+        <span class="wallet-dots"><span></span><span></span><span></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="actions-title">
+  <div class="section-heading">
+    <div>
+      <h2 id="actions-title">What would you like to do?</h2>
+      <p>Choose an action to get started.</p>
+    </div>
+  </div>
+
+  <div class="action-grid">
+    <a class="action-card" href="{% url 'deposit_page' %}">
+      <span class="action-icon"><span class="material-symbols-rounded" aria-hidden="true">south_west</span></span>
+      <h3>Record a deposit <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></h3>
+      <p>Add money to a customer's account and keep the record up to date.</p>
+    </a>
+    <a class="action-card" href="{% url 'withdraw_page' %}">
+      <span class="action-icon"><span class="material-symbols-rounded" aria-hidden="true">north_east</span></span>
+      <h3>Record a withdrawal <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></h3>
+      <p>Record a cash withdrawal clearly and consistently.</p>
+    </a>
+    <a class="action-card" href="{% url 'transfer_page' %}">
+      <span class="action-icon"><span class="material-symbols-rounded" aria-hidden="true">sync_alt</span></span>
+      <h3>Make a transfer <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></h3>
+      <p>Move money between customers and keep the details together.</p>
+    </a>
+  </div>
+</section>
+
+<section class="home-bottom" aria-label="More mobile money tools">
+  <div class="welcome-panel">
+    <span class="welcome-icon"><span class="material-symbols-rounded" aria-hidden="true">groups</span></span>
+    <div>
+      <h3>Keep your people organized</h3>
+      <p>Manage your customer and agent details in one easy-to-find place.</p>
+      <a class="activity-link" href="{% url 'add_customer_page' %}">Manage customers <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></a>
+    </div>
+  </div>
+  <div class="activity-panel">
+    <div>
+      <h3>Need to check a transaction?</h3>
+      <p>Open your money list to review recorded activity.</p>
+      <a class="activity-link" href="{% url 'money_list_page' %}">View money list <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></a>
+    </div>
+    <span class="material-symbols-rounded" aria-hidden="true">receipt_long</span>
+  </div>
+</section>
+{% endblock %}

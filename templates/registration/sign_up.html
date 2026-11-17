@@ -1,0 +1,30 @@
+{% extends '../base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    
+    <input type="checkbox" onclick="showPassword()"> Show password <br><br>
+
+    <input type="submit" class="btn btn-primary" value="Sign Up">
+</form>
+
+
+<script>
+    function showPassword() {
+        var box1 = document.getElementById("id_password1");
+        var box2 = document.getElementById("id_password2");
+
+        if (box1.type === "password") {
+            box1.type = "text";
+            box2.type = "text";
+        } else {
+            box1.type = "password";
+            box2.type = "password";
+        }
+    }
+</script>
+{% endblock %}

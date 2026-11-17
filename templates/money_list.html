@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    .money-list-table thead th {
+        font-weight: 800;
+    }
+
+    .money-list-table .transaction-type {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 11px;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.02em;
+        line-height: 1.2;
+    }
+
+    .money-list-table .transaction-type-deposit {
+        border-color: var(--deposit-border);
+        background: var(--deposit-surface);
+        color: var(--deposit-ink);
+    }
+
+    .money-list-table .transaction-type-withdraw {
+        border-color: var(--withdraw-border);
+        background: var(--withdraw-surface);
+        color: var(--withdraw-ink);
+    }
+
+    .money-list-table .transaction-type-transfer {
+        border-color: var(--transfer-border);
+        background: var(--transfer-surface);
+        color: var(--transfer-ink);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Money List</h2>
+
+<table class="table table-striped table-hover money-list-table">
+    <thead class="table-dark">
+        <tr>
+            <th>Type</th>
+            <th>Customer</th>
+            <th>Sender</th>
+            <th>Receiver</th>
+            <th>Agent</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>
+                {% if transaction.type == 'Deposit' %}
+                    <span class="transaction-type transaction-type-deposit">Deposit</span>
+                {% elif transaction.type == 'Withdraw' %}
+                    <span class="transaction-type transaction-type-withdraw">Withdraw</span>
+                {% else %}
+                    <span class="transaction-type transaction-type-transfer">Transfer</span>
+                {% endif %}
+            </td>
+            <td>{{ transaction.customer|default:"—" }}</td>
+            <td>{{ transaction.sender|default:"—" }}</td>
+            <td>{{ transaction.receiver|default:"—" }}</td>
+            <td>{{ transaction.agent|default:"—" }}</td>
+            <td>{{ transaction.amount }}</td>
+            <td>{{ transaction.date|date:"d M Y, H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td class="text-center " colspan="7">No transactions yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

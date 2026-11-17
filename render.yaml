@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: mobile-money-demo
+    runtime: python
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: gunicorn MobileMoney.wsgi:application
+    envVars:
+      - key: DEBUG
+        value: "false"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
