@@ -390,6 +390,63 @@
       box-shadow: 0 5px 18px rgba(20, 66, 67, 0.04);
     }
 
+    .app-modal {
+      width: min(560px, calc(100vw - 32px));
+      max-height: min(90vh, 840px);
+      margin: auto;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+    }
+
+    .app-modal::backdrop {
+      background: rgba(11, 27, 30, 0.56);
+      backdrop-filter: blur(3px);
+    }
+
+    .app-modal-content {
+      max-height: min(90vh, 840px);
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .app-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .app-modal-header h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .app-modal-close {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      place-items: center;
+      border: 1px solid var(--outline-border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .page-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 20px;
+    }
+
     .btn {
       display: inline-flex;
       min-height: 42px;
@@ -697,6 +754,36 @@
   </div>
   {% block scripts %}{% endblock %}
   <script>
+    document.addEventListener('click', function (event) {
+      const openButton = event.target.closest('[data-modal-open]');
+      if (openButton) {
+        const dialog = document.getElementById(openButton.dataset.modalOpen);
+        if (dialog) {
+          dialog.showModal();
+        }
+      }
+
+      const closeButton = event.target.closest('[data-modal-close]');
+      if (closeButton) {
+        const dialog = closeButton.closest('dialog');
+        if (dialog) {
+          dialog.close();
+        }
+      }
+    });
+
+    document.querySelectorAll('dialog').forEach(function (dialog) {
+      dialog.addEventListener('click', function (event) {
+        if (event.target === dialog) {
+          dialog.close();
+        }
+      });
+
+      if (dialog.hasAttribute('data-open-on-load')) {
+        dialog.showModal();
+      }
+    });
+
     (function () {
       const themeToggle = document.getElementById('theme-toggle');
       const themeToggleIcon = document.getElementById('theme-toggle-icon');
