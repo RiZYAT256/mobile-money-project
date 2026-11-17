@@ -624,20 +624,22 @@
         </span>
       </a>
 
-      <p class="nav-section-label">Workspace</p>
-      <ul class="nav-list">
-        <li><a class="nav-link" href="{% url 'index_page' %}"><span class="material-symbols-rounded" aria-hidden="true">home</span>Home</a></li>
-        <li><a class="nav-link" href="{% url 'money_list_page' %}"><span class="material-symbols-rounded" aria-hidden="true">receipt_long</span>Transactions</a></li>
-        <li><a class="nav-link" href="{% url 'deposit_page' %}"><span class="material-symbols-rounded" aria-hidden="true">add_card</span>Deposit</a></li>
-        <li><a class="nav-link" href="{% url 'withdraw_page' %}"><span class="material-symbols-rounded" aria-hidden="true">payments</span>Withdraw</a></li>
-        <li><a class="nav-link" href="{% url 'transfer_page' %}"><span class="material-symbols-rounded" aria-hidden="true">sync_alt</span>Transfer</a></li>
-      </ul>
+      {% if user.is_authenticated %}
+        <p class="nav-section-label">Workspace</p>
+        <ul class="nav-list">
+          <li><a class="nav-link" href="{% url 'index_page' %}"><span class="material-symbols-rounded" aria-hidden="true">home</span>Home</a></li>
+          <li><a class="nav-link" href="{% url 'money_list_page' %}"><span class="material-symbols-rounded" aria-hidden="true">receipt_long</span>Transactions</a></li>
+          <li><a class="nav-link" href="{% url 'deposit_page' %}"><span class="material-symbols-rounded" aria-hidden="true">add_card</span>Deposit</a></li>
+          <li><a class="nav-link" href="{% url 'withdraw_page' %}"><span class="material-symbols-rounded" aria-hidden="true">payments</span>Withdraw</a></li>
+          <li><a class="nav-link" href="{% url 'transfer_page' %}"><span class="material-symbols-rounded" aria-hidden="true">sync_alt</span>Transfer</a></li>
+        </ul>
 
-      <p class="nav-section-label">People</p>
-      <ul class="nav-list">
-        <li><a class="nav-link" href="{% url 'add_customer_page' %}"><span class="material-symbols-rounded" aria-hidden="true">group</span>Customers</a></li>
-        <li><a class="nav-link" href="{% url 'add_agent_page' %}"><span class="material-symbols-rounded" aria-hidden="true">support_agent</span>Agents</a></li>
-      </ul>
+        <p class="nav-section-label">People</p>
+        <ul class="nav-list">
+          <li><a class="nav-link" href="{% url 'add_customer_page' %}"><span class="material-symbols-rounded" aria-hidden="true">group</span>Customers</a></li>
+          <li><a class="nav-link" href="{% url 'add_agent_page' %}"><span class="material-symbols-rounded" aria-hidden="true">support_agent</span>Agents</a></li>
+        </ul>
+      {% endif %}
 
       <p class="nav-section-label">Account</p>
       <ul class="nav-list">

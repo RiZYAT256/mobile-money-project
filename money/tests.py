@@ -2,11 +2,19 @@ from types import SimpleNamespace
 
 from django.contrib.auth.models import AnonymousUser, User
 from django.template.loader import render_to_string
-from django.test import Client, RequestFactory, SimpleTestCase, TestCase
+from django.test import Client, RequestFactory, SimpleTestCase, TestCase, override_settings
 from money.models import Agent, Customer
 from money.views import index_view
 
 
+@override_settings(
+    STORAGES={
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+)
 class BaseNavigationTests(SimpleTestCase):
     def test_dashboard_redirects_anonymous_users_to_login(self):
         request = RequestFactory().get("/")
@@ -16,6 +24,13 @@ class BaseNavigationTests(SimpleTestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response["Location"], "/login/?next=/")
+
+    def test_root_displays_login_before_dashboard_for_anonymous_users(self):
+        response = Client().get("/", follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain, [("/login/?next=/", 302)])
+        self.assertContains(response, "Login")
 
     def test_authenticated_navigation_uses_application_urls(self):
         user = SimpleNamespace(
@@ -52,6 +67,21 @@ class BaseNavigationTests(SimpleTestCase):
         self.assertIn('href="/signup/"', html)
         self.assertNotIn('action="/logout/"', html)
 
+    def test_login_layout_hides_dashboard_activity_links_for_anonymous_users(self):
+        html = render_to_string("base.html", {"user": AnonymousUser()})
+
+        for path in (
+            "/money_list/",
+            "/deposit/",
+            "/withdraw/",
+            "/transfer/",
+            "/add_agent/",
+            "/add_customer/",
+        ):
+            with self.subTest(path=path):
+                self.assertNotIn(f'href="{path}"', html)
+        self.assertIn('href="/login/"', html)
+
     def test_login_and_signup_pages_render_with_shared_layout(self):
         login_html = render_to_string(
             "registration/login.html",
@@ -66,6 +96,14 @@ class BaseNavigationTests(SimpleTestCase):
         self.assertIn("Mobile Money", signup_html)
 
 
+@override_settings(
+    STORAGES={
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+)
 class MoneyListTests(TestCase):
     def setUp(self):
         user = User.objects.create_user(username="money-list-test", password="test-password")
